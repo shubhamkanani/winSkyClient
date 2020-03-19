@@ -1,9 +1,9 @@
 import React, { Component, Suspense } from 'react';
-import { Bar, Line } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
+import {connect} from 'react-redux';
 import {
   Badge,
   Button,
-  ButtonDropdown,
   ButtonGroup,
   ButtonToolbar,
   Card,
@@ -12,218 +12,29 @@ import {
   CardHeader,
   CardTitle,
   Col,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   Progress,
   Row,
   Table,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  InputGroupAddon,
+  InputGroup
 } from 'reactstrap';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities'
-
+import {allDataBackUp,getMediaDetails} from './../../api'
 
 const brandPrimary = getStyle('--primary')
 const brandSuccess = getStyle('--success')
 const brandInfo = getStyle('--info')
 const brandWarning = getStyle('--warning')
 const brandDanger = getStyle('--danger')
-
-// Card Chart 1
-const cardChartData1 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: brandPrimary,
-      borderColor: 'rgba(255,255,255,.55)',
-      data: [65, 59, 84, 84, 51, 55, 40],
-    },
-  ],
-};
-
-const cardChartOpts1 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          color: 'transparent',
-          zeroLineColor: 'transparent',
-        },
-        ticks: {
-          fontSize: 2,
-          fontColor: 'transparent',
-        },
-
-      }],
-    yAxes: [
-      {
-        display: false,
-        ticks: {
-          display: false,
-          min: Math.min.apply(Math, cardChartData1.datasets[0].data) - 5,
-          max: Math.max.apply(Math, cardChartData1.datasets[0].data) + 5,
-        },
-      }],
-  },
-  elements: {
-    line: {
-      borderWidth: 1,
-    },
-    point: {
-      radius: 4,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  }
-}
-
-
-// Card Chart 2
-const cardChartData2 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: brandInfo,
-      borderColor: 'rgba(255,255,255,.55)',
-      data: [1, 18, 9, 17, 34, 22, 11],
-    },
-  ],
-};
-
-const cardChartOpts2 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          color: 'transparent',
-          zeroLineColor: 'transparent',
-        },
-        ticks: {
-          fontSize: 2,
-          fontColor: 'transparent',
-        },
-
-      }],
-    yAxes: [
-      {
-        display: false,
-        ticks: {
-          display: false,
-          min: Math.min.apply(Math, cardChartData2.datasets[0].data) - 5,
-          max: Math.max.apply(Math, cardChartData2.datasets[0].data) + 5,
-        },
-      }],
-  },
-  elements: {
-    line: {
-      tension: 0.00001,
-      borderWidth: 1,
-    },
-    point: {
-      radius: 4,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  },
-};
-
-// Card Chart 3
-const cardChartData3 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.2)',
-      borderColor: 'rgba(255,255,255,.55)',
-      data: [78, 81, 80, 45, 34, 12, 40],
-    },
-  ],
-};
-
-const cardChartOpts3 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-      }],
-    yAxes: [
-      {
-        display: false,
-      }],
-  },
-  elements: {
-    line: {
-      borderWidth: 2,
-    },
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  },
-};
-
-// Card Chart 4
-const cardChartData4 = {
-  labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.3)',
-      borderColor: 'transparent',
-      data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98],
-    },
-  ],
-};
-
-const cardChartOpts4 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-        barPercentage: 0.6,
-      }],
-    yAxes: [
-      {
-        display: false,
-      }],
-  },
-};
 
 // Social Box Chart
 
@@ -399,22 +210,30 @@ const mainChartOpts = {
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-
     this.toggle = this.toggle.bind(this);
     this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
-
     this.state = {
-      dropdownOpen: false,
+      modalOpen: false,
       radioSelected: 2,
+      loading:false,
+      model:false,
+      emailId:'',
+      size:'',
+      documentS:'',
+      imageS:''
     };
   }
 
   toggle() {
     this.setState({
-      dropdownOpen: !this.state.dropdownOpen,
+      modalOpen: !this.state.modalOpen,
     });
   }
-
+  componentDidMount(){
+    getMediaDetails().then(res=>{
+      this.setState({...this.state,size:res.size,documentS:res.documentSize,imageS:res.imageSize})
+    });
+  }
   onRadioBtnClick(radioSelected) {
     this.setState({
       radioSelected: radioSelected,
@@ -423,109 +242,128 @@ class Dashboard extends Component {
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
+  //button for backup
+  setBackupLoding = () =>{
+    this.setState({
+      ...this.state,
+      loading:true
+    })
+    allDataBackUp(this.state.emailId).then(res=>{
+      if(res)
+      {
+        this.setState({
+          ...this.state,
+          loading:false
+        })
+      }
+    })
+  }
+  handleInputChange = (event) => {
+    //console.log(inputs)
+      event.persist();
+      this.setState({...this.state,[event.target.name]: event.target.value});
+      console.log(this.state)
+  }
+  handleSubmit = (event) =>{
+    console.log('.......enter')
+    event.preventDefault();
+    this.setState({
+      ...this.state,
+      loading:true
+    })
+    allDataBackUp(this.state.emailId).then(res=>{
+      if(res)
+      {
+        this.setState({
+          ...this.state,
+          loading:false
+        })
+      }
+    })
+    this.setState({...this.state,emailId:null});
+  }
   render() {
 
     return (
       <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" sm="6" lg="3">
-            <Card className="text-white bg-info">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <ButtonDropdown id='card1' isOpen={this.state.card1} toggle={() => { this.setState({ card1: !this.state.card1 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem disabled>Disabled action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
-                <div className="text-value">9.823</div>
-                <div>Members online</div>
-              </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Line data={cardChartData2} options={cardChartOpts2} height={70} />
-              </div>
-            </Card>
-          </Col>
-
-          <Col xs="12" sm="6" lg="3">
+        {this.props.items.data[0].role==='admin' && <Row style={{marginTop:'10px'}}>
+          <Col xs='12' sm='6' lg='6'>
             <Card className="text-white bg-primary">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <Dropdown id='card2' isOpen={this.state.card2} toggle={() => { this.setState({ card2: !this.state.card2 }); }}>
-                    <DropdownToggle className="p-0" color="transparent">
-                      <i className="icon-location-pin"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </ButtonGroup>
-                <div className="text-value">9.823</div>
-                <div>Members online</div>
+              <CardBody className="pb-0" style={{padding:'15px'}}>
+                {!this.state.loading?
+                  <Button color='success' className="float-right" onClick={this.setBackupLoding}><b> <i className='fa fa-spin fa-circle-o-notch'> </i> Backup </b></Button>
+                  :<Button color='success' className="float-right" disabled><b> <i className='fa fa-spin fa-circle-o-notch'> </i> Backup </b></Button>
+              }
+                <div className="text-value">All data Backup</div>
+                <div>useful when server is destroy</div>
               </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Line data={cardChartData1} options={cardChartOpts1} height={70} />
-              </div>
+                <div className="chart-wrapper mx-3" style={{padding:'15px'}}>
+                    <Progress value={50} color='success'/>
+                </div>
             </Card>
           </Col>
+          <Col xs='12' sm='6' lg='6'>
+              <Card className="text-white bg-danger">
+                <CardBody className="pb-0" style={{padding:'15px'}}>
+                {  !this.state.loading?
+                  <Button color='warning' className="float-right" onClick={this.toggle}><b> <i className='fa fa-spin fa-circle-o-notch'> </i> Backup </b></Button>:
+                  <Button color='warning' className="float-right" disabled><b> <i className='fa fa-spin fa-circle-o-notch'> </i> Backup </b></Button>
+                  }
+                  <div className="text-value">data Backup by user need</div>
+                  <div>when user send request for his data Backup</div>
+                </CardBody>
+                  <div className="chart-wrapper mx-3" style={{padding:'15px'}}>
+                      <Progress value={50} color='warning'/>
+                  </div>
+              </Card>
+          </Col>
+        </Row>}
+                  <Modal isOpen={this.state.modalOpen} toggle={this.toggle}>
+                    <ModalHeader toggle={this.toggle}>Backup Form</ModalHeader>
+                    <ModalBody>
+                        <Form onSubmit={this.handleSubmit}>
+                          <FormGroup>
+                            <Label for='emailId'><b>Requested User email_Id :</b></Label>
+                            <InputGroup>
+                              <InputGroupAddon addonType="prepend">
+                                <Button disabled><i className='fa fa-envelope-open'></i></Button>
+                              </InputGroupAddon>
+                              <Input type='email' name='emailId' placeholder='Enter Email here' onChange={this.handleInputChange}/>
+                            </InputGroup>
+                          </FormGroup>
+                          {!this.state.loading?<Row style={{float:'right', marginRight:'3px'}}>
+                            <Button color="primary" type='submit' style={{margin:'2px'}}><b>Take BackUp</b></Button>
+                            <Button color="secondary" onClick={this.toggle} style={{margin:'2px'}}><b>Cancel BackUp</b></Button>
+                          </Row>:
+                          <Row style={{float:'right'}}>
+                            <Button color="primary" type='submit' style={{margin:'2px'}} disabled><b>Take BackUp</b></Button>
+                            <Button color="secondary" disabled style={{margin:'2px'}}><b>Cancel BackUp</b></Button>
+                          </Row>
+                        }
+                        </Form>
+                    </ModalBody>
+                  </Modal>
+          <Row style={{marginTop:"10px"}}>
+            <Col xs='12' sm='12' lg='12'>
+              <Card className="text-darkGray bg-secondary" style={{width:'100%'}}>
+                <CardBody className="pb-0" style={{padding:'15px'}}>
+                  <span className="float-right" disabled><b><i className='fa fa-database'></i> total: ({this.state.size} MB)</b></span>
+                  <div className="text-value">Expenditure Storage</div>
 
-          <Col xs="12" sm="6" lg="3">
-            <Card className="text-white bg-warning">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <Dropdown id='card3' isOpen={this.state.card3} toggle={() => { this.setState({ card3: !this.state.card3 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </ButtonGroup>
-                <div className="text-value">9.823</div>
-                <div>Members online</div>
-              </CardBody>
-              <div className="chart-wrapper" style={{ height: '70px' }}>
-                <Line data={cardChartData3} options={cardChartOpts3} height={70} />
-              </div>
-            </Card>
-          </Col>
-
-          <Col xs="12" sm="6" lg="3">
-            <Card className="text-white bg-danger">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <ButtonDropdown id='card4' isOpen={this.state.card4} toggle={() => { this.setState({ card4: !this.state.card4 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
-                <div className="text-value">9.823</div>
-                <div>Members online</div>
-              </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Bar data={cardChartData4} options={cardChartOpts4} height={70} />
-              </div>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
+                </CardBody>
+                  <div className="chart-wrapper mx-3" style={{padding:'15px'}}>
+                    <Progress multi style={{height:'20px',border:'1px solid gray'}}>
+                      <Progress bar color="success" value={(this.state.documentS*100)/this.state.size}><b>document ({this.state.documentS} MB)</b></Progress>
+                      <Progress bar color="info" value={(this.state.imageS*100)/this.state.size}><b>image ({this.state.imageS} MB)</b></Progress>
+                      <Progress bar color="warning" value={((this.state.size*100)-((this.state.documentS*100)/this.state.size)-((this.state.imageS*100)/this.state.size))}>
+                          <b>Others ({this.state.size-this.state.documentS-this.state.imageS} MB)</b>
+                      </Progress>
+                    </Progress>
+                  </div>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
           <Col>
             <Card>
               <CardBody>
@@ -1052,5 +890,9 @@ class Dashboard extends Component {
     );
   }
 }
-
-export default Dashboard;
+const mapStateToProps = state =>({
+  ...state,
+  // console.log(userData.items.data[0].role)
+  // return userData.items.data[0].role
+})
+export default connect(mapStateToProps,null)(Dashboard);

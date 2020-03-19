@@ -8,7 +8,7 @@ const data = {
             }
             console.log(data.email,data.password)
             return await axios.post(
-              'http://localhost:8080/auth/signin',
+              process.env.REACT_APP_API_URL+'/auth/signin',
               data
             )
             .then(res=> {
@@ -55,7 +55,7 @@ export const forgot=async (emailId)=>{
   }
   //console.log(data)
   return await axios.post(
-    'http://localhost:8080/auth/forgotpassword',
+    process.env.REACT_APP_API_URL+'/auth/forgotpassword',
     data
   )
   .then(res=> {
@@ -68,7 +68,7 @@ export const reset=async (password,token)=>{
     password:password,
   }
   return await axios.post(
-    'http://localhost:8080/auth/resetpassword?token='+token,
+    process.env.REACT_APP_API_URL+'/auth/resetpassword?token='+token,
     data
   )
   .then(res=> {
@@ -76,23 +76,3 @@ export const reset=async (password,token)=>{
     return Promise.resolve(res.data);
   })
 }
-// export const fetch=(url, options)=>{
-//         // performs api calls sending the required authentication headers
-//         const headers = {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json'
-//         }
-
-//         // Setting Authorization header
-//         // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
-//         if (loggedIn()) {
-//             headers['Authorization'] = 'Bearer' + this.getToken()
-//         }
-
-//         return fetch(url, {
-//             headers,
-//             ...options
-//         })
-//             .then(this._checkStatus)
-//             .then(response => response.json())
-//     }

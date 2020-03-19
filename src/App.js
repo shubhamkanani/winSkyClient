@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component} from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import {loggedIn} from './Authentications'
+import {connect} from 'react-redux';
+import {fetchData} from './Reducer/Action/action'
 // import { renderRoutes } from 'react-router-config';
 import './App.scss';
 
-const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
+const loading = () => <div className="animated fadeIn pt-3 text-center"><i className="fa fa-spin fa-spinner fa-5x"></i></div>;
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./containers/DefaultLayout'));
@@ -19,6 +21,12 @@ const Reset = React.lazy(()=>import('./views/Pages/Reset'));
 const Gest = React.lazy(()=>import('./views/Gest/Gest'));
 class App extends Component {
 
+  async componentWillMount() {
+    if(loggedIn()){
+    await this.props.data()
+  }
+  }
+
   render() {
     const PrivateRoute = ({ component: Component, ...props }) => (
       <Route {...props} render={props => (
@@ -31,6 +39,7 @@ class App extends Component {
         )
       )}/>
     );
+
     return (
       <BrowserRouter>
           <React.Suspense fallback={loading()}>
@@ -49,5 +58,9 @@ class App extends Component {
     );
   }
 }
-
-export default App;
+const mapDispatchToProps = (dispatch ) =>{
+    return{
+      data:()=>{dispatch(fetchData())}
+    }
+}
+export default connect(null,mapDispatchToProps)(App);
