@@ -255,3 +255,13 @@ export const uploadData = async(data,props) => {
   }
 }
 
+// send message to user
+
+export  const  messageSender = async (data) =>{
+    return axios.post(process.env.REACT_APP_API_URL+'/api/userdetails/updatedata?token='+getToken(),data)
+      .then(res=>{
+          console.log((res.data))
+          return res.data
+      })
+}
+
