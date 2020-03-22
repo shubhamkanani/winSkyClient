@@ -4,10 +4,6 @@ export default {
       name: 'Dashboard',
       url: '/dashboard',
       icon: 'icon-speedometer',
-      badge: {
-        variant: 'info',
-        text: 'NEW',
-      },
     },
     {
       title: true,
@@ -50,5 +46,14 @@ export default {
       url:'/trash',
       icon:'fa fa-trash'
     },
+    {
+      title: true,
+      name: 'Message',
+    },
+    {
+      name:'Chat Box',
+      url:'/message',
+      icon:'fa fa-weixin'
+    }
   ],
 };

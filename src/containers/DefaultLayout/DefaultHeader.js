@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Settings from './../../views/Settings/Settings'
 import { Link, NavLink } from 'react-router-dom';
-import {messageSender} from './../../api'
+import {animateScroll} from 'react-scroll';
+import {messageSender,retrieveMsgByUser} from './../../api'
 import {
   Badge, UncontrolledDropdown, Button,
   DropdownItem, DropdownMenu, DropdownToggle,
@@ -9,10 +10,11 @@ import {
   Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, Label, InputGroup, InputGroupAddon, Input, Row
 } from 'reactstrap';
 import PropTypes from 'prop-types';
-
+import './CSS/DefaultHeader.css'
 import {AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import logo from '../../assets/img/brand/logo.svg'
 import sygnet from '../../assets/img/brand/sygnet.svg'
+import index from "react-phone-number-input";
 
 const propTypes = {
   children: PropTypes.node,
@@ -28,32 +30,55 @@ class DefaultHeader extends Component {
     this.state = {
       modalOpen: false,
       message:'',
-      sendMessage:false
+      sendMessage:false,
+      msgHistory:[],
     }
   }
   toggle() {
     this.setState({
       modalOpen: !this.state.modalOpen,
     });
+    this.scrollBottom()
   }
   handleMessageChange = (event) =>{
     //this.event.persist();
     this.setState({...this.state,[event.target.name]: event.target.value});
-    console.log(this.state)
+    //console.log(this.state)
   }
-  handleMessageSubmit = (event) =>{
-    this.event.preventDefault();
-    messageSender(this.state.message)
-      .then(res=>{
-        if(res.success){
-          this.setState({...this.state,sendMessage:true})
-        }
+  handleMessageSubmit = () =>{
+    if(this.state.message!=''){
+      messageSender(this.state.message).then(res=>{
+          if(res.success){
+            this.scrollBottom()
+          }
       })
+    }
+    else {
+      alert('Write Message')
+    }
+  }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.msgHistory === this.props.msgHistory) {
+      this.scrollBottom();
+    }
+
+  }
+
+  scrollBottom = () =>{
+    debugger
+    retrieveMsgByUser().then(res=>{
+          this.setState({...this.state,msgHistory:res})
+    })
+    animateScroll.scrollToBottom({
+      containerId: "messageList"
+    });
+
   }
   render() {
 
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
+    const { msgHistory } = this.state;
 
     return (
       <React.Fragment>
@@ -103,26 +128,42 @@ class DefaultHeader extends Component {
         <Modal isOpen={this.state.modalOpen} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>Messenger</ModalHeader>
           <ModalBody>
-            <Form onSubmit={this.handleMessageSubmit}>
-              <FormGroup>
-                <Label for='emailId'><b>Enter Message here:</b></Label>
-                <InputGroup>
-                  <InputGroupAddon addonType="prepend">
-                    <Button disabled><i className='fa fa-envelope-open'></i></Button>
-                  </InputGroupAddon>
-                  <Input type='textarea' name='message' placeholder='Enter message here' onChange={this.handleMessageChange}/>
-                </InputGroup>
-              </FormGroup>
-              {!this.state.loading?<Row style={{float:'right', marginRight:'3px'}}>
-                  <Button color="primary" type='submit' style={{margin:'2px'}}><b>Take BackUp</b></Button>
-                  <Button color="secondary" onClick={this.toggle} style={{margin:'2px'}}><b>Cancel BackUp</b></Button>
-                </Row>:
-                <Row style={{float:'right'}}>
-                  <Button color="primary" type='submit' style={{margin:'2px'}} disabled><b>Send Message</b></Button>
-                  <Button color="secondary" disabled style={{margin:'2px'}}><b>Cancel message</b></Button>
+            <div className="mesgs">
+              <div className="msg_history"  id='messageList'>
+                {
+                  msgHistory.map((item,index)=>{
+                    return <div>
+                      { item.type==='admin' &&  <div className="incoming_msg">
+                        <div className="incoming_msg_img"><img className="img-avatar"  alt="sam"/>
+                        </div>
+                        <div className="received_msg">
+                          <div className="received_withd_msg">
+                            <p>{item.message}</p>
+                            <span className="time_date"> {item.createdAt} </span></div>
+                        </div>
+                      </div>
+                    }{ item.type==='user' &&<div className="outgoing_msg">
+                      <div className="sent_msg">
+                        <p>{item.message}</p>
+                        <span className="time_date"> {item.createdAt}</span></div>
+                    </div>
+                      }
+                    </div>
+                  })
+                }
+              </div>
+              <div className="type_msg">
+                <div className="input_msg_write">
+                  <input type="text" name="message" className="write_msg" placeholder="Enter message here"  onChange={this.handleMessageChange}/>
+                  <button className="msg_send_btn" type="button" onClick={this.handleMessageSubmit}><i className="fa fa-paper-plane-o" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <br/><br/>
+                <Row style={{float:'right', marginRight:'3px'}}>
+                  <Button color="secondary" onClick={this.toggle} style={{margin:'2px'}}><b>Cancel message</b></Button>
                 </Row>
-              }
-            </Form>
           </ModalBody>
         </Modal>
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}

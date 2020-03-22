@@ -96,7 +96,7 @@ export const RemoveDocument=async(data)=>{
 export const getTrashDocument=async()=>{
   return await axios.get(process.env.REACT_APP_API_URL+"/api/upload/trash?token="+getToken())
   .then(res => {
-    console.log(res.data)
+    console.log(res.data, 'from trash document')
     return res.data;
   })
 }
@@ -208,10 +208,11 @@ export const allDataBackUp = async(emailId) => {
 export const uploadImg = async(data) => {
   console.log(data)
   if(data){
-      axios.post(process.env.REACT_APP_API_URL+'/api/userdetails/pimg?token='+getToken(),data)
+      return axios.post(process.env.REACT_APP_API_URL+'/api/userdetails/pimg?token='+getToken(),data)
       .then(res=>{
-        alert(res.data.message)
-        return null
+          if(res.data.success){
+              window.location.reload(false);
+          }
       })
       .catch(err=>{
         alert(err)
@@ -257,11 +258,80 @@ export const uploadData = async(data,props) => {
 
 // send message to user
 
-export  const  messageSender = async (data) =>{
-    return axios.post(process.env.REACT_APP_API_URL+'/api/userdetails/updatedata?token='+getToken(),data)
+export  const  messageSender = async (message) =>{
+  console.log('enter.........')
+  const data = {
+    message:message
+  }
+     return await axios.post(process.env.REACT_APP_API_URL+'/api/message/send?token='+getToken(),data)
       .then(res=>{
-          console.log((res.data))
-          return res.data
+        return res.data
       })
 }
 
+//retrieve message
+
+export const retrieveMessage = async () =>{
+  return  axios.get(process.env.REACT_APP_API_URL+'/api/message')
+    .then(res=>{
+      if(res.data.success){
+          const emailId=[];var flag=false;
+        res.data.data.map((item)=>{
+            emailId.map(email =>{
+              if(item.emailId===email){
+                  flag=true;
+              }
+            })
+          if(!flag){
+            emailId.push(item.emailId)
+          }
+          flag=false;
+        })
+        const data = {
+          emailList:emailId,
+          data:res.data.data
+        }
+        return data
+      }
+    })
+}
+
+// admin send message
+
+export const sendMsgByAdmin = async (data)=>{
+  return  axios.post(process.env.REACT_APP_API_URL+'/api/message?')
+    .then(res=>{
+      if(res.data.success){
+        const emailId=[];var flag=false;
+        res.data.data.map((item)=>{
+          emailId.map(email =>{
+            if(item.emailId===email){
+              flag=true;
+            }
+          })
+          if(!flag){
+            emailId.push(item.emailId)
+          }
+          flag=false;
+        })
+        const data = {
+          emailList:emailId,
+          data:res.data.data
+        }
+        console.log(data)
+        return data
+      }
+    })
+}
+
+//user retrive message
+
+export const retrieveMsgByUser = async ()=>{
+  return  axios.get(process.env.REACT_APP_API_URL+'/api/message?token='+getToken())
+    .then(res=>{
+      if(res.data.success){
+            //console.log(res.data)
+            return res.data.data;
+      }
+    })
+}

@@ -15,8 +15,10 @@ import {
 } from '@coreui/react';
 // sidebar nav config
 import navigation from '../../_nav';
+import adminNavigation from '../../admin_nav';
 // routes config
 import routes from '../../routes';
+import {connect} from "react-redux";
 
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
 const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
@@ -43,9 +45,15 @@ class DefaultLayout extends Component {
           <AppSidebar fixed display="lg">
             <AppSidebarHeader />
             <AppSidebarForm />
-            <Suspense>
-            <AppSidebarNav navConfig={navigation} {...this.props} router={router}/>
+            {this.props.items.data[0].role==='admin'?
+              <Suspense>
+            <AppSidebarNav navConfig={adminNavigation} {...this.props} router={router}/>
             </Suspense>
+              :
+              <Suspense>
+                <AppSidebarNav navConfig={navigation} {...this.props} router={router}/>
+              </Suspense>
+            }
             <AppSidebarFooter />
             <AppSidebarMinimizer />
           </AppSidebar>
@@ -81,5 +89,10 @@ class DefaultLayout extends Component {
     );
   }
 }
+const mapStateToProps = state =>({
+  ...state,
+  // console.log(userData.items.data[0].role)
+  // return userData.items.data[0].role
+})
+export default connect(mapStateToProps,null)(DefaultLayout);
 
-export default DefaultLayout;

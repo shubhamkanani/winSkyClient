@@ -11,7 +11,6 @@ import {connect} from 'react-redux'
 
 function Settings(props) {
   const inputFile = useRef(null)
-  //const [pimg, setPimg] = useState({});
   const [totalFile,setTotalfile] = useState();
   const startDate = moment().subtract(7,"days");
   const [state,setState] = useState(()=>{const recentData = []
@@ -27,21 +26,7 @@ function Settings(props) {
   const [pinput,setPinput] = useState({});
   const [loding,setloding] = useState(false);
   const [modal, setModal] = useState(false);
-  const recentData =[];
   const toggle = () => setModal(!modal);
-
-  // useEffect(()=>{
-
-  //   console.log(startDate._d);
-  //   GetAllItems().then(async res=>{
-  //     await res.data.map(async(item)=>{
-  //         if(moment().min(startDate._d)){
-  //           await recentData.push(item)
-  //         }
-  //     })
-  //     console.log(recentData);
-  //   })
-  // },[])
 
   const editProfileImg = () => {
     // `current` points to the mounted file input element
@@ -55,7 +40,7 @@ function Settings(props) {
     var form = new FormData();
     form.append('file', event.target.files[0]);
     console.log(event.target.files[0])
-    uploadImg(form);
+    uploadImg(form)
   }
   const onhandalInputChange = async(event) =>{
     event.persist();
@@ -184,7 +169,7 @@ function Settings(props) {
                   <div class="px-4 pt-0 pb-4 bg-dark">
                       <div class="media align-items-end profile-header">
                           <div class="profile mr-3">
-                            <img src="https://img.freepik.com/free-vector/businessman-profile-cartoon_18591-58479.jpg?size=338&ext=jpg" alt="..." width="130" class="rounded mb-2 img-thumbnail"/>
+                            <img src={process.env.REACT_APP_API_URL+'/uploads/'+props.items.data[0].emailId+'/'+'profileImage'} alt="..." width="130" class="rounded mb-2 img-thumbnail"/>
                             <br/>
                             <div>
                               <button class="btn btn-dark btn-sm btn-block" onClick={editProfileImg}>Edit profile image</button>

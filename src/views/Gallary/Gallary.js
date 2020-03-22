@@ -122,7 +122,7 @@ function Gallary() {
     <div>
     <Row>
         <Col sm={2} style={{borderRight:'2px solid gray', height:'auto'}} >
-          <br/>
+          <br />
                                           {/*All Button*/}
           <Button style={buttonStyle} onClick={onClickAllItemsFolder}>
             <i className="fa fa-folder-open fa-5x"></i>
@@ -150,7 +150,7 @@ function Gallary() {
         </Col>
         <Col sm={10} style={{padding:'30px'}}>
           <br/>
-            <ListGroup>
+            <ListGroup >
                 {state.data && state.data.length>0 && <ListGroupItem>
                     <Row>
                       <Col sm={1}>
