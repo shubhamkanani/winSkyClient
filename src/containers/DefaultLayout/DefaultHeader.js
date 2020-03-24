@@ -15,6 +15,7 @@ import {AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import logo from '../../assets/img/brand/logo.svg'
 import sygnet from '../../assets/img/brand/sygnet.svg'
 import index from "react-phone-number-input";
+import {connect} from "react-redux";
 
 const propTypes = {
   children: PropTypes.node,
@@ -57,13 +58,6 @@ class DefaultHeader extends Component {
       alert('Write Message')
     }
   }
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.msgHistory === this.props.msgHistory) {
-      this.scrollBottom();
-    }
-
-  }
-
   scrollBottom = () =>{
     debugger
     retrieveMsgByUser().then(res=>{
@@ -112,12 +106,15 @@ class DefaultHeader extends Component {
           </NavItem>
           <UncontrolledDropdown nav direction="down">
             <DropdownToggle nav style={{marginRight:"1%"}}>
-              <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+              <img src={process.env.REACT_APP_API_URL+'/uploads/'+this.props.items.data[0].emailId+'/'+'profileImage'} className="img-avatar" alt="admin@bootstrapmaster.com" />
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem>
               <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem>
-              <DropdownItem onClick={this.toggle}><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
+              {this.props.items.data[0].role==='user'?
+                <DropdownItem onClick={this.toggle}><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>:
+                <NavLink to="/message" className="nav-link"><DropdownItem><i className="fa fa-envelope-o"></i> Messagese</DropdownItem></NavLink>
+              }
               <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem>
               <NavLink to="/settings" className="nav-link"><DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem></NavLink>
               <NavLink to="/settings" className="nav-link"><DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem></NavLink>
@@ -125,9 +122,9 @@ class DefaultHeader extends Component {
             </DropdownMenu>
           </UncontrolledDropdown>
         </Nav>
-        <Modal isOpen={this.state.modalOpen} toggle={this.toggle}>
+        <Modal isOpen={this.state.modalOpen} toggle={this.toggle} >
           <ModalHeader toggle={this.toggle}>Messenger</ModalHeader>
-          <ModalBody>
+          <ModalBody style={{height:'50%'}}>
             <div className="mesgs">
               <div className="msg_history"  id='messageList'>
                 {
@@ -174,5 +171,9 @@ class DefaultHeader extends Component {
 
 DefaultHeader.propTypes = propTypes;
 DefaultHeader.defaultProps = defaultProps;
-
-export default DefaultHeader;
+const mapStateToProps = state =>({
+  ...state,
+  // console.log(userData.items.data[0].role)
+  // return userData.items.data[0].role
+})
+export default connect(mapStateToProps,null)(DefaultHeader);

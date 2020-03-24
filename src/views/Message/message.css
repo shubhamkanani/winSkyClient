@@ -4,7 +4,18 @@ img{ max-width:100%;}
   background: #f8f8f8 none repeat scroll 0 0;
   float: left;
   overflow: hidden;
-  width: 40%; border-right:1px solid #c4c4c4;
+  border-right:1px solid #c4c4c4;
+}
+.on_inbox_people {
+  background: #f8f8f8 none repeat scroll 0 0;
+  float: left;
+  overflow: hidden;
+  border-right:1px solid #c4c4c4;
+}
+.back_btn{
+  border: 0px;
+  background-color: transparent;
+  display: none;
 }
 .inbox_msg {
   border: 1px solid #c4c4c4;
@@ -91,9 +102,11 @@ img{ max-width:100%;}
 .mesgs {
   float: left;
   padding: 30px 15px 0 25px;
-  width: 60%;
 }
-
+.on_mesgs {
+  float: left;
+  padding: 30px 15px 0 25px;
+}
 .sent_msg p {
   background: #05728f none repeat scroll 0 0;
   border-radius: 3px;
@@ -134,4 +147,26 @@ img{ max-width:100%;}
 .msg_history {
   height: 516px;
   overflow-y: auto;
+}
+@media (max-width: 768px) {
+  .mesgs{
+    display: none;
+  }
+  .on_mesgs {
+    float: left;
+    padding: 10px 15px 0 25px;
+    display: block;
+  }
+  .back_btn{
+    border: 0px;
+    background-color: transparent;
+    display: block;
+  }
+  .on_inbox_people {
+    background: #f8f8f8 none repeat scroll 0 0;
+    float: left;
+    overflow: hidden;
+    border-right:1px solid #c4c4c4;
+    display: none;
+  }
 }

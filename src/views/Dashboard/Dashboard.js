@@ -260,9 +260,9 @@ class Dashboard extends Component {
   }
   handleInputChange = (event) => {
     //console.log(inputs)
-      event.persist();
-      this.setState({...this.state,[event.target.name]: event.target.value});
-      console.log(this.state)
+    event.persist();
+    this.setState({...this.state,[event.target.name]: event.target.value});
+    console.log(this.state)
   }
   handleSubmit = (event) =>{
     console.log('.......enter')
@@ -293,77 +293,77 @@ class Dashboard extends Component {
                 {!this.state.loading?
                   <Button color='success' className="float-right" onClick={this.setBackupLoding}><b> <i className='fa fa-spin fa-circle-o-notch'> </i> Backup </b></Button>
                   :<Button color='success' className="float-right" disabled><b> <i className='fa fa-spin fa-circle-o-notch'> </i> Backup </b></Button>
-              }
+                }
                 <div className="text-value">All data Backup</div>
                 <div>useful when server is destroy</div>
               </CardBody>
-                <div className="chart-wrapper mx-3" style={{padding:'15px'}}>
-                    <Progress value={50} color='success'/>
-                </div>
+              <div className="chart-wrapper mx-3" style={{padding:'15px'}}>
+                <Progress value={50} color='success'/>
+              </div>
             </Card>
           </Col>
           <Col xs='12' sm='6' lg='6'>
-              <Card className="text-white bg-danger">
-                <CardBody className="pb-0" style={{padding:'15px'}}>
+            <Card className="text-white bg-danger">
+              <CardBody className="pb-0" style={{padding:'15px'}}>
                 {  !this.state.loading?
                   <Button color='warning' className="float-right" onClick={this.toggle}><b> <i className='fa fa-spin fa-circle-o-notch'> </i> Backup </b></Button>:
                   <Button color='warning' className="float-right" disabled><b> <i className='fa fa-spin fa-circle-o-notch'> </i> Backup </b></Button>
-                  }
-                  <div className="text-value">data Backup by user need</div>
-                  <div>when user send request for his data Backup</div>
-                </CardBody>
-                  <div className="chart-wrapper mx-3" style={{padding:'15px'}}>
-                      <Progress value={50} color='warning'/>
-                  </div>
-              </Card>
+                }
+                <div className="text-value">data Backup by user need</div>
+                <div>when user send request for his data Backup</div>
+              </CardBody>
+              <div className="chart-wrapper mx-3" style={{padding:'15px'}}>
+                <Progress value={50} color='warning'/>
+              </div>
+            </Card>
           </Col>
         </Row>}
-                  <Modal isOpen={this.state.modalOpen} toggle={this.toggle}>
-                    <ModalHeader toggle={this.toggle}>Backup Form</ModalHeader>
-                    <ModalBody>
-                        <Form onSubmit={this.handleSubmit}>
-                          <FormGroup>
-                            <Label for='emailId'><b>Requested User email_Id :</b></Label>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">
-                                <Button disabled><i className='fa fa-envelope-open'></i></Button>
-                              </InputGroupAddon>
-                              <Input type='email' name='emailId' placeholder='Enter Email here' onChange={this.handleInputChange}/>
-                            </InputGroup>
-                          </FormGroup>
-                          {!this.state.loading?<Row style={{float:'right', marginRight:'3px'}}>
-                            <Button color="primary" type='submit' style={{margin:'2px'}}><b>Take BackUp</b></Button>
-                            <Button color="secondary" onClick={this.toggle} style={{margin:'2px'}}><b>Cancel BackUp</b></Button>
-                          </Row>:
-                          <Row style={{float:'right'}}>
-                            <Button color="primary" type='submit' style={{margin:'2px'}} disabled><b>Take BackUp</b></Button>
-                            <Button color="secondary" disabled style={{margin:'2px'}}><b>Cancel BackUp</b></Button>
-                          </Row>
-                        }
-                        </Form>
-                    </ModalBody>
-                  </Modal>
-          <Row style={{marginTop:"10px"}}>
-            <Col xs='12' sm='12' lg='12'>
-              <Card className="text-darkGray bg-secondary" style={{width:'100%'}}>
-                <CardBody className="pb-0" style={{padding:'15px'}}>
-                  <span className="float-right" disabled><b><i className='fa fa-database'></i> total: ({this.state.size} MB)</b></span>
-                  <div className="text-value">Expenditure Storage</div>
+        <Modal isOpen={this.state.modalOpen} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>Backup Form</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={this.handleSubmit}>
+              <FormGroup>
+                <Label for='emailId'><b>Requested User email_Id :</b></Label>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <Button disabled><i className='fa fa-envelope-open'></i></Button>
+                  </InputGroupAddon>
+                  <Input type='email' name='emailId' placeholder='Enter Email here' onChange={this.handleInputChange}/>
+                </InputGroup>
+              </FormGroup>
+              {!this.state.loading?<Row style={{float:'right', marginRight:'3px'}}>
+                  <Button color="primary" type='submit' style={{margin:'2px'}}><b>Take BackUp</b></Button>
+                  <Button color="secondary" onClick={this.toggle} style={{margin:'2px'}}><b>Cancel BackUp</b></Button>
+                </Row>:
+                <Row style={{float:'right'}}>
+                  <Button color="primary" type='submit' style={{margin:'2px'}} disabled><b>Take BackUp</b></Button>
+                  <Button color="secondary" disabled style={{margin:'2px'}}><b>Cancel BackUp</b></Button>
+                </Row>
+              }
+            </Form>
+          </ModalBody>
+        </Modal>
+        <Row style={{marginTop:"10px"}}>
+          <Col xs='12' sm='12' lg='12'>
+            <Card className="text-darkGray bg-secondary" style={{width:'100%'}}>
+              <CardBody className="pb-0" style={{padding:'15px'}}>
+                <span className="float-right" disabled><b><i className='fa fa-database'></i> total: ({this.state.size} MB)</b></span>
+                <div className="text-value">Expenditure Storage</div>
 
-                </CardBody>
-                  <div className="chart-wrapper mx-3" style={{padding:'15px'}}>
-                    <Progress multi style={{height:'20px',border:'1px solid gray'}}>
-                      <Progress bar color="success" value={(this.state.documentS*100)/this.state.size}><b>document ({this.state.documentS} MB)</b></Progress>
-                      <Progress bar color="info" value={(this.state.imageS*100)/this.state.size}><b>image ({this.state.imageS} MB)</b></Progress>
-                      <Progress bar color="warning" value={((this.state.size*100)-((this.state.documentS*100)/this.state.size)-((this.state.imageS*100)/this.state.size))}>
-                          <b>Others ({this.state.size-this.state.documentS-this.state.imageS} MB)</b>
-                      </Progress>
-                    </Progress>
-                  </div>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
+              </CardBody>
+              <div className="chart-wrapper mx-3" style={{padding:'15px'}}>
+                <Progress multi style={{height:'20px',border:'1px solid gray'}}>
+                  <Progress bar color="success" value={(this.state.documentS*100)/this.state.size}><b>document ({this.state.documentS} MB)</b></Progress>
+                  <Progress bar color="info" value={(this.state.imageS*100)/this.state.size}><b>image ({this.state.imageS} MB)</b></Progress>
+                  <Progress bar color="warning" value={((this.state.size*100)-((this.state.documentS*100)/this.state.size)-((this.state.imageS*100)/this.state.size))}>
+                    <b>Others ({this.state.size-this.state.documentS-this.state.imageS} MB)</b>
+                  </Progress>
+                </Progress>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
           <Col>
             <Card>
               <CardBody>

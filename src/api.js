@@ -299,7 +299,7 @@ export const retrieveMessage = async () =>{
 // admin send message
 
 export const sendMsgByAdmin = async (data)=>{
-  return  axios.post(process.env.REACT_APP_API_URL+'/api/message?')
+  return  axios.post(process.env.REACT_APP_API_URL+'/api/message?',data)
     .then(res=>{
       if(res.data.success){
         const emailId=[];var flag=false;

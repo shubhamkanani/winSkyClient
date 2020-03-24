@@ -3,11 +3,17 @@ import  './message.css'
 import  {retrieveMessage,sendMsgByAdmin} from './../../api'
 import {connect} from "react-redux";
 import * as Scroll from 'react-scroll';
+import {Col,Row} from 'reactstrap'
 import {string} from "prop-types";
 function Message(props) {
+
   const [state,setState] = useState({
     data:[],
     emailList:[]
+  });
+  const [css,setCss] = useState({
+    mesgs:true,
+    inbox_people:true,
   })
   const messageList = useRef(null)
   const  [msgInput,setMsgInput] = useState({});
@@ -31,30 +37,32 @@ function Message(props) {
         if(msg.emailId===emailId){
           await filter.push(msg)
         }
-      })
+      });
       newState.data = filter;
       setState(newState)
-    })
+    });
     msgInput.emailId = emailId;
     msgInput.type = props.items.data[0].role;
     console.log(newState)
-  }
+    setCss({...css,mesgs:!css.mesgs,inbox_people:!css.inbox_people})
+  };
 
   //on change input message
 
   const onChangeMsg = (event) =>{
-    setMsgInput({...msgInput,[event.target.name]:event.target.value})
+    setMsgInput({...msgInput,[event.target.name]:event.target.value});
     console.log(msgInput);
-  }
+  };
 
   //on send message
 
   const  onSendMsg = (msgInput) =>{
       sendMsgByAdmin(msgInput).then(res=>{
-        filterMessage(msgInput.emailId)
+        filterMessage(msgInput.emailId);
         scrollBottom();
+        setMsgInput({...msgInput,message:''})
       })
-  }
+  };
 
   //scroll for new chat
 
@@ -62,32 +70,34 @@ function Message(props) {
     scroll.scrollToBottom({
       containerId: "messageList"
     });
-  }
+  };
 
   //search input change
 
   const onSearchChange =(event) =>{
     setSearchInput({...searchInput,[event.target.name]:event.target.value})
     //console.log(searchInput);
-  }
+  };
 
   const onSearchClick = () =>{
     if(searchInput.search){
       var searchStr = searchInput.search;
-      var searchEmail = []
+      var searchEmail = [];
       state.emailList.map((mail)=>{
         if(mail.search(searchStr)){
             searchEmail.push(mail);
         }
-      })
+      });
       setState({emailList:searchEmail})
     }
-  }
-
+  };
+const goToBack = () =>{
+  setCss({...css,mesgs:!css.mesgs,inbox_people:!css.inbox_people})
+}
   return(
     <div>
-      <div className="inbox_msg">
-        <div className="inbox_people">
+      <Row className="inbox_msg">
+        <Col lg={4} className={css.mesgs?'inbox_people':'on_inbox_people'}>
           <div className="headind_srch">
             <div className="recent_heading">
               <h4>Recent</h4>
@@ -115,8 +125,9 @@ function Message(props) {
             })
           }
           </div>
-        </div>
-        <div className="mesgs">
+        </Col>
+        <Col lg={8} className={css.mesgs?'mesgs':'on_mesgs'}>
+          <div style={{width:'100%',marginBottom:"5px"}}><button className='back_btn'><i className="fa fa-arrow-left" onClick={goToBack}></i></button></div>
           <div className="msg_history" id='messageList' onLoad={scrollBottom}>
             {state.data &&
             state.data.map((item,index)=>
@@ -143,13 +154,13 @@ function Message(props) {
           </div>
           <div className="type_msg">
             <div className="input_msg_write">
-              <input type="text" name="message" className="write_msg" placeholder="Type a message" onChange={onChangeMsg}/>
+              <input type="text" name="message" className="write_msg" value={msgInput.message} placeholder="Type a message" onChange={onChangeMsg}/>
               <button className="msg_send_btn" type="button" onClick={()=>onSendMsg(msgInput)}><i className="fa fa-paper-plane-o" aria-hidden="true"></i>
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </div>
   )
 }

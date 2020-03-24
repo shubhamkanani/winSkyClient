@@ -21,9 +21,9 @@ const Reset = React.lazy(()=>import('./views/Pages/Reset'));
 const Gest = React.lazy(()=>import('./views/Gest/Gest'));
 class App extends Component {
 
-  async componentWillMount() {
+  componentWillMount() {
     if(loggedIn()){
-    await this.props.data()
+       this.props.data().then(res =>true)
   }
   }
 
@@ -60,7 +60,7 @@ class App extends Component {
 }
 const mapDispatchToProps = (dispatch ) =>{
     return{
-      data:()=>{dispatch(fetchData())}
+      data:async ()=>{await dispatch(fetchData())}
     }
 }
 export default connect(null,mapDispatchToProps)(App);
